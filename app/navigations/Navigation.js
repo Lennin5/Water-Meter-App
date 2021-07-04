@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text } from 'react-native'
 import { Icon } from 'react-native-elements';
 import { StatusBar } from 'expo-status-bar';
@@ -11,11 +11,20 @@ import HomeStack from "./HomeStack";
 import SensorsStack from "./SensorsStack";
 import AccountStack from "./AccountStack";
 
+import { IsLogged } from './Eye';
 const Tab = createBottomTabNavigator();
 
 export default function Navigation() {
 
-  const [darkMode, setDarkMode] = useState(false);
+  useEffect(() => {
+    // Aquí va a estar verificando CREO lo del usuario
+    IsLogged();
+  }, [IsLogged])
+  
+  const existUser = IsLogged();
+  // console.log(status);
+
+  const [darkMode, setDarkMode] = useState(false);  
 
   const LightTheme = {
       colors: {
@@ -79,21 +88,25 @@ export default function Navigation() {
             // backgroundColor={darkMode ? "#000000" : "#ffffff"}
             // barStyle={darkMode ? "dark-content" : "dark-content"} 
             style={darkMode ? "light" : "dark"}
+
           />          
             <Tab.Navigator
-                initialRouteName="account"
+                initialRouteName="account"                
                 tabBarOptions={{
                   inactiveTintColor: darkMode ? "#B1B3B5" : "#9F9F9F",
-                  activeTintColor: darkMode ? "#37d8bd" : "#47cab4",
+                  activeTintColor: darkMode ? "#37d8bd" : "#47cab4",                  
                 }}                
-                screenOptions={({ route }) => ({
-                tabBarIcon: ({ color }) => screenOptions(route, color),
+                screenOptions={                
+                ({ route }) => ({
+                tabBarIcon: ({ color }) => screenOptions(route, color),                
+                tabBarVisible: existUser,
                 })}
             >
             <Tab.Screen
             name="explore"
             component={ExploreStack}
-            options={{ title: "Explore" }}
+            options={{ title: "Explore"}}
+            
             />
             <Tab.Screen
             name="calendar"
@@ -113,7 +126,7 @@ export default function Navigation() {
             <Tab.Screen
             name="account"
             component={AccountStack}
-            options={{ title: "Account" }}
+            options={{ title: "Account",  }}
             />                
             </Tab.Navigator>
         </NavigationContainer>

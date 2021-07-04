@@ -19,6 +19,7 @@ export default function ExploreStack() {
                         borderBottomColor: colors.borderBottomColor                              
                         // elevation: 3, TRES ES EL ELEVATION PREDETERMINADO DE LA SOMBRA BOTTOM DEL HEADER
                       },
+                    // headerShown: false
                 }}                
             />
         </Stack.Navigator>
