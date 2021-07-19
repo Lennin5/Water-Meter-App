@@ -11,20 +11,16 @@ import HomeStack from "./HomeStack";
 import SensorsStack from "./SensorsStack";
 import AccountStack from "./AccountStack";
 
-import { IsLogged } from './Eye';
+import UserExist from '../components/UserExist';
+import IntroApp from '../components/IntroApp';
 const Tab = createBottomTabNavigator();
 
 export default function Navigation() {
-
-  useEffect(() => {
-    // Aquí va a estar verificando CREO lo del usuario
-    IsLogged();
-  }, [IsLogged])
   
-  const existUser = IsLogged();
-  // console.log(status);
+  const existUser = UserExist();
+  console.log("Ne: "+existUser);
 
-  const [darkMode, setDarkMode] = useState(false);  
+  const [darkMode, setDarkMode] = useState(true);  
 
   const LightTheme = {
       colors: {
@@ -83,6 +79,8 @@ export default function Navigation() {
     },
   };  
     return (
+      <>
+      <IntroApp />    
         <NavigationContainer theme={darkMode ? DarkTheme : LightTheme}>
           <StatusBar
             // backgroundColor={darkMode ? "#000000" : "#ffffff"}
@@ -94,7 +92,7 @@ export default function Navigation() {
                 initialRouteName="account"                
                 tabBarOptions={{
                   inactiveTintColor: darkMode ? "#B1B3B5" : "#9F9F9F",
-                  activeTintColor: darkMode ? "#37d8bd" : "#47cab4",                  
+                  activeTintColor: darkMode ? "#37d8bd" : "#47cab4",    
                 }}                
                 screenOptions={                
                 ({ route }) => ({
@@ -130,6 +128,7 @@ export default function Navigation() {
             />                
             </Tab.Navigator>
         </NavigationContainer>
+      </>
     )
 }
 

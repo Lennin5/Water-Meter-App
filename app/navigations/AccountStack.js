@@ -2,6 +2,7 @@ import React from 'react'
 import { createStackNavigator } from "@react-navigation/stack";
 import { useTheme } from '@react-navigation/native';
 
+import UserExist from '../components/UserExist';
 import Account from "../screens/Account/Account";
 import Login from "../screens/Account/Login";
 import Register from "../screens/Account/Register";
@@ -10,6 +11,8 @@ const Stack = createStackNavigator();
 
 export default function AccountStack() {
     const { colors } = useTheme();   
+    const existUser = UserExist();
+
     return(
         <Stack.Navigator>
             <Stack.Screen
@@ -22,6 +25,7 @@ export default function AccountStack() {
                         borderBottomWidth: 1,
                         borderBottomColor: colors.borderBottomColor  
                       },
+                    headerShown: existUser
                   }}    
             />
             <Stack.Screen
@@ -32,6 +36,7 @@ export default function AccountStack() {
                         borderBottomWidth: 1,
                         borderBottomColor: colors.borderBottomColor  
                     },
+                    headerShown: existUser
                  }}                
             />
             <Stack.Screen
@@ -42,6 +47,7 @@ export default function AccountStack() {
                         borderBottomWidth: 1,
                         borderBottomColor: colors.borderBottomColor  
                     },
+                    // headerShown: existUser
                  }}
             />            
         </Stack.Navigator>

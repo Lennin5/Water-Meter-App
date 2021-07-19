@@ -1,12 +1,15 @@
 import React from 'react'
 import { createStackNavigator } from "@react-navigation/stack";
-import Sensors from "../screens/Sensors";
 import { useTheme } from '@react-navigation/native';
+
+import UserExist from '../components/UserExist';
+import Sensors from "../screens/Sensors";
 
 const Stack = createStackNavigator();
 
 export default function SensorsStack() {
-    const { colors } = useTheme();   
+    const { colors } = useTheme(); 
+    const existUser = UserExist();
     return(
         <Stack.Navigator>            
             <Stack.Screen                          
@@ -19,6 +22,7 @@ export default function SensorsStack() {
                         borderBottomColor: colors.borderBottomColor                              
                         // elevation: 3, TRES ES EL ELEVATION PREDETERMINADO DE LA SOMBRA BOTTOM DEL HEADER
                       },
+                    // headerShown: existUser
                 }}                
             />
         </Stack.Navigator>
