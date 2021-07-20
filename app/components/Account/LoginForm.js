@@ -13,32 +13,25 @@ export default function LoginForm() {
     const navigation = useNavigation();
     const [isVisible, setIsVisible] = useState(false);    
 
-    const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("l@gmail.com");
+	const [password, setPassword] = useState("1234567");
     const [hidePassword, setHidePassword] = useState(true);
 
     const ToastMessage = (message) =>{
-
-        if(message == "Account created successfully"){
-            Toast.show(message,{
-                position: Toast.position.bottom,
-                containerStyle:{width: "100%", height: 50, backgroundColor: "#07b3a3", borderRadius: 0, marginBottom: -40},
-                animationDuration: 700,
-                mask: false,
-                animation: true,
-                shadow: false,
-              });
-        }else{
-            Toast.show(message,{
-                position: Toast.position.bottom,
-                containerStyle:{width: "100%", height: "auto", backgroundColor: "#b30740", borderRadius: 0, marginBottom: -40},
-                animationDuration: 700,
-                mask: false,
-                animation: true,
-                shadow: false,
-              });
-        }        
-            
+        Toast.show(message, {
+            position: Toast.position.bottom,
+            containerStyle:{
+                width: "100%", 
+                height: "auto", 
+                backgroundColor: "#b30740", 
+                borderRadius: 0, 
+                marginBottom: -40
+            },
+            animationDuration: 700,
+            mask: false,
+            animation: true,
+            shadow: false,
+        });               
     }
   
 
@@ -72,7 +65,7 @@ export default function LoginForm() {
 	};    
 
     return (
-    <View style={styles.formContainer}>		
+    <View style={styles.formContainer}>
     <WaterLoader isVisible={isVisible} />
         <Input
             placeholder='Email'
@@ -116,17 +109,24 @@ export default function LoginForm() {
                 />                
             }            
         />     
-        <Text style={{marginTop: -10, fontSize: 16, color: "#737373"}}>Forgot your password?</Text> 
-            <Text></Text>
-        <BasicButton 
-        title="LOGIN" 
-        animation="standard"
-        buttonStyle={{backgroundColor: "#07b3a3", width: "50%", height: "auto", borderRadius: 30,}}
-        textStyle={{padding:7}}
-        onPress={Login}
-        />
-
-    <Text></Text>       
+        <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
+            <Text>{`    
+                `}</Text>   
+            <BasicButton 
+            title="LOGIN" 
+            animation="standard"
+            buttonStyle={styles.btnLogin}
+            textStyle={{padding:7}}
+            onPress={Login}
+            />
+        <Text>{`
+        
+            `}</Text>                   
+        <Text style={styles.dontHaveAnAccountText}>Don't have an account?
+            <Text> </Text>
+            <Text style={styles.registerNowText} onPress={() => navigation.navigate("register")}>
+                Register Now</Text>
+        </Text>
 
     </View>
     )
@@ -156,12 +156,28 @@ const styles = StyleSheet.create({
         marginTop: 15,        
 	},
 
-	btnRegister: {	
-		backgroundColor: "#6848F2",	
-		borderRadius: 30,
-		marginTop: 20,
-		width: "75%",			
-        height: 50,				        
+    forgotPasswordText:{
+        marginTop: -10, 
+        fontSize: 16, 
+        color: "#737373"
+    },
+
+    dontHaveAnAccountText:{
+        marginTop: -10, 
+        fontSize: 16, 
+        color: "#737373",        
+    },    
+    registerNowText: {
+        fontSize: 16, 
+        color: "#27a194",        
+        textDecorationLine: "underline",
+    },
+
+	btnLogin: {	
+        backgroundColor: "#07b3a3", 
+        width: "50%", 
+        height: "auto", 
+        borderRadius: 30			        
 	},
 
 })

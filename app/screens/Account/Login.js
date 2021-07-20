@@ -11,9 +11,8 @@ export default function Login() {
     return (        
         <KeyboardAwareScrollView enableOnAndroid={false} style={{backgroundColor: "#fff"}}>
             <Text>{`
-
             `}</Text>
-            <View style={styles.viewLogin}>                
+            <View>
                 <Image
                     source={require("../../../assets/img/login-banner.png")}
                     style={{width: fullscreen}}
@@ -27,7 +26,5 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-    viewLoginForm: {
 
-    }
 });

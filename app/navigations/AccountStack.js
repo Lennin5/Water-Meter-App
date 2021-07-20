@@ -43,11 +43,11 @@ export default function AccountStack() {
                 name="register"
                 component={Register}
                 options={{ title: "Registro",
-                    headerStyle: {                                        
-                        borderBottomWidth: 1,
-                        borderBottomColor: colors.borderBottomColor  
-                    },
-                    // headerShown: existUser
+                    // headerStyle: {                                        
+                    //     borderBottomWidth: 1,
+                    //     borderBottomColor: colors.borderBottomColor  
+                    // },
+                    headerShown: existUser
                  }}
             />            
         </Stack.Navigator>
