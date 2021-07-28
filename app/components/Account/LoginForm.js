@@ -48,9 +48,7 @@ export default function LoginForm() {
 			} else {				
 				await firebase.auth().signInWithEmailAndPassword(email, password)
 					.then(response=>{
-                    // ToastMessage("All fields are required");
                     setIsVisible(false);					
-					console.log("Existe Usuario Activo - consLog de login");	
                     navigation.navigate("account");	
 					})
 					.catch(error => {
@@ -68,6 +66,7 @@ export default function LoginForm() {
     <View style={styles.formContainer}>
     <WaterLoader isVisible={isVisible} />
         <Input
+            value="l@gmail.com"
             placeholder='Email'
             onChange={e => setEmail(e.nativeEvent.text)}
             placeholderTextColor={"#27a194"}
@@ -83,6 +82,7 @@ export default function LoginForm() {
             }
         /> 
         <Input
+            value="1234567"
             placeholder='Password'            
             onChange={e => setPassword(e.nativeEvent.text)}
             password={true}

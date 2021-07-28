@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, ActivityIndicator, Image, StatusBar } from "react-native";
 import { Overlay } from "react-native-elements";
-import { useTheme } from "@react-navigation/native";
-
 
 import { firebaseApp } from "../utils/firebase";
 import firebase from "firebase/app";
@@ -10,33 +8,32 @@ import "firebase/firestore";
 const db = firebase.firestore(firebaseApp);
 
 export default function IntroApp() {
-
-	const colors = useTheme();
 	
 	const [statusBarColor, setStatusBarColor] = useState(null);
 	const [dataLoadedState, setDataLoadedState] = useState(null);
 
+	// Efecto para decirle a la app que los datos han cargado y aplicar 
+	// el color de la barra en dark mode dependiendo de 3 opciones:
+	// 1. Si el usuario NO está loggeado == background: white, dark-content
+	// 2. Si el usuario SI etsá loggeado y tiene dark mode activado == background: black, light-content
+	// 3. Si el usuario SI está loggeado y tiene dark mode desactivado == background: white, dark-content
 	useEffect(() => {
 		(async () => {
 			await firebase.auth().onAuthStateChanged(async function (user) {
 				if (user) {
-					console.log("Existe Usuario Activo");
-					await db.collection(user.uid).doc('Datos_Principales')
+					await db.collection(user.uid).doc('Configuration_Data')
 						.onSnapshot(function (doc) {
 							if (doc.exists) {
 								var data = doc.data();							
 								setTimeout(() => {
-									setDataLoadedState(data.Datos_Cargados);
-									setStatusBarColor(data.Modo_Oscuro);
+									setDataLoadedState(data.Loaded_Data);
+									setStatusBarColor(data.Dark_Mode);
 								}, 1);
 							} else {
-								console.log("El documento no existe!");
 								setDataLoadedState(true);
 							}
 						});
-
 				}else{					
-					console.log("No Existe Usuario Activo");
 					setDataLoadedState(true);
 				}
 			}
@@ -44,12 +41,13 @@ export default function IntroApp() {
 		})();		
 	}, []);
 
-
 	return (
 		<>
 			<StatusBar
-				backgroundColor={statusBarColor ? colors.theme == "dark" ? "#fff" : "#000" : "#fff"}
-				barStyle={statusBarColor ? colors.theme == "dark" ? "dark-content" : "light-content" : "dark-content"} />
+				backgroundColor={statusBarColor ? "black" : "white"}
+				barStyle={statusBarColor ? "light-content" : "dark-content"} 
+				translucent={true}
+				/>
 			<Overlay
 			/* // Traemos de la BD el valor del campo "Datos_Cargados", se lo ponemos al dataLoadedState		
 				// Si los datos NO han cargado, isVisible del IntroApp = true (Va a estar cargando) y,

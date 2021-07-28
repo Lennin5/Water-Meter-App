@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import { View, Text } from 'react-native'
+import React, { useState, useEffect } from 'react';
 import { Icon } from 'react-native-elements';
-import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import { firebaseApp } from "../utils/firebase";
+import firebase from "firebase/app";
+import "firebase/firestore";
+const db = firebase.firestore(firebaseApp);
 
 import ExploreStack from "./ExploreStack";
 import CalendarStack from "./CalendarStack";
@@ -18,10 +21,31 @@ const Tab = createBottomTabNavigator();
 export default function Navigation() {
   
   const existUser = UserExist();
-  console.log("Ne: "+existUser);
+  console.log("Navigation.js - Exist User?: "+existUser);
 
-  const [darkMode, setDarkMode] = useState(true);  
-
+  // Efecto que trae el dark mode true/false del usuario actual y se le aplica al State que,
+  // a su vez se lo aplica a todo el sistema de la app
+  const [darkMode, setDarkMode] = useState(null);
+  useEffect(() => {
+    (async () => {
+      firebase.auth().onAuthStateChanged(async function (user) {
+        if (user) {
+          await db.collection(user.uid).doc('Configuration_Data')
+            .onSnapshot(function (doc) {
+              if (doc.exists) {
+                var user = doc.data();
+                setDarkMode(user.Dark_Mode);
+              } else {
+                setDarkMode(false);
+              }
+            });
+        } else {
+          setDarkMode(false);          
+        }
+      });
+    })();
+  }, []);
+  
   const LightTheme = {
       colors: {
         ...DefaultTheme.colors,
@@ -82,12 +106,6 @@ export default function Navigation() {
       <>
       <IntroApp />    
         <NavigationContainer theme={darkMode ? DarkTheme : LightTheme}>
-          <StatusBar
-            // backgroundColor={darkMode ? "#000000" : "#ffffff"}
-            // barStyle={darkMode ? "dark-content" : "dark-content"} 
-            style={darkMode ? "light" : "dark"}
-
-          />          
             <Tab.Navigator
                 initialRouteName="account"                
                 tabBarOptions={{

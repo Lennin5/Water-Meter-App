@@ -11,7 +11,7 @@ if (!global.atob) global.atob = decode;
 
 export default function App() {
   return (
-    <>      
+    <>         
       <Navigation />
     </>
   );

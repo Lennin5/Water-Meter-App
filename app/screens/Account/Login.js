@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet, Image, StatusBar } from 'react-native'
 import { fullscreen } from 'min-document';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 // import { Image } from 'react-native-elements'
@@ -10,6 +10,11 @@ import WaterLoader from '../../components/WaterLoader';
 export default function Login() {
     return (        
         <KeyboardAwareScrollView enableOnAndroid={false} style={{backgroundColor: "#fff"}}>
+			<StatusBar
+				backgroundColor="white"
+				barStyle="dark-content" 
+                translucent={true}
+                />            
             <Text>{`
             `}</Text>
             <View>
