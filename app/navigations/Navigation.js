@@ -20,21 +20,25 @@ const Tab = createBottomTabNavigator();
 
 export default function Navigation() {
   
-  const existUser = UserExist();
+  const existUser = UserExist();  
   console.log("Navigation.js - Exist User?: "+existUser);
 
   // Efecto que trae el dark mode true/false del usuario actual y se le aplica al State que,
   // a su vez se lo aplica a todo el sistema de la app
   const [darkMode, setDarkMode] = useState(null);
+  const [dataLoadedState, setDataLoadedState] = useState(null);
   useEffect(() => {
     (async () => {
-      firebase.auth().onAuthStateChanged(async function (user) {
+      await firebase.auth().onAuthStateChanged(async function (user) {
         if (user) {
           await db.collection(user.uid).doc('Configuration_Data')
             .onSnapshot(function (doc) {
               if (doc.exists) {
                 var user = doc.data();
                 setDarkMode(user.Dark_Mode);
+								setTimeout(() => {
+									setDataLoadedState(user.Loaded_Data);
+								}, 1);                
               } else {
                 setDarkMode(false);
               }
@@ -107,7 +111,7 @@ export default function Navigation() {
       <IntroApp />    
         <NavigationContainer theme={darkMode ? DarkTheme : LightTheme}>
             <Tab.Navigator
-                initialRouteName="account"                
+                initialRouteName={"account"}
                 tabBarOptions={{
                   inactiveTintColor: darkMode ? "#B1B3B5" : "#9F9F9F",
                   activeTintColor: darkMode ? "#37d8bd" : "#47cab4",    

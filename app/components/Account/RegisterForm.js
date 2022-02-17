@@ -9,17 +9,28 @@ import { useNavigation } from "@react-navigation/native";
 import { validateEmail } from "../../utils/validation";
 import WaterLoader from '../WaterLoader';
 
+import * as Localization from 'expo-localization';
+import i18n from 'i18n-js';
+import { es } from '../../translations/es/global';
+import { en } from '../../translations/en/global';
+
 export default function RegisterForm() {
     const navigation = useNavigation();
     const [isVisible, setIsVisible] = useState(false);    
 
-    const [establishment, setEstablishment] = useState("");
-    const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-    const [repeatPassword, setRepeatPassword] = useState("");
+    const [establishmentName, setEstablishmentName] = useState("test");
+    const [email, setEmail] = useState("t@gmail.com");
+	const [password, setPassword] = useState("1234567");
+    const [repeatPassword, setRepeatPassword] = useState("1234567");
 
     const [hidePassword, setHidePassword] = useState(true);
     const [hideRepeatPassword, setHideRepeatPassword] = useState(true);
+
+    const [language, setLanguage] = useState("es"); // useState que define en string el lenguaje
+    i18n.fallbacks = true; // Si no especificamos el origen de la traducción pone la traduccion del dispositivo predeterminada
+    i18n.translations = { en, es }; // lenguajes 
+    i18n.locale = language; // Poner manualmente el lenguaje
+    // i18n.locale = Localization.locale; // Detectar el lenguaje del dispositivo       
     
     const ToastMessage = (message) =>{
         if(message == "Account created successfully"){
@@ -42,12 +53,54 @@ export default function RegisterForm() {
               });
         }                    
     }    
+
+	const Register = async () => {		        
+		// signo ! significa Si email esta NUll o vacio ; == igual, !== diferente de
+		if(!establishmentName || !email || !password || !repeatPassword){
+			ToastMessage("All fields are required");
+		} else {
+		  if(!validateEmail(email)){		  
+            ToastMessage("Invalid Email");
+			} else {                
+				if(password !== repeatPassword){					                    
+					ToastMessage("Passwords don't match");
+				} else {
+                    setIsVisible(true);
+					await firebase.auth().createUserWithEmailAndPassword(email, password)
+					.then(response=>{
+						firebase.firestore().collection(response.user.uid).doc("Main_Data").set({
+							Establishment_Name: establishmentName,
+                        })
+						firebase.firestore().collection(response.user.uid).doc("Configuration_Data").set({
+							Dark_Mode: false,
+							Loaded_Data: true
+                        }).then(response =>{
+                            // Data is setted in firestore
+                            // console.log(response);     
+                            // firebase.auth().signOut();
+                        }).catch(error =>{
+                            console.log("No Se Guardaron Los Datos En La BD");	
+                            setIsVisible(false);
+                        })    	
+                        setIsVisible(false);
+                        ToastMessage("Account created successfully");
+                        navigation.navigate("account");
+					}).catch(error => {						
+						ToastMessage(error);
+                        setIsVisible(false);
+					});
+                    // setIsVisible(false);
+				}
+			}
+		}	
+	};    
     return (
         <View style={styles.formContainer}>
             <WaterLoader isVisible={isVisible} />
             <Input
             placeholder='Establishment'
-            onChange={e => setEstablishment(e.nativeEvent.text)}
+            placeholder={i18n.t('register.establishment-name-placeholder')}
+            onChange={e => setEstablishmentName(e.nativeEvent.text)}
             placeholderTextColor={"#27a194"}
             inputContainerStyle={styles.inputContainerStyleRegister}
             inputStyle={{color: "#27a194"}}
@@ -61,7 +114,7 @@ export default function RegisterForm() {
             }
         /> 
         <Input
-            placeholder='Email'
+            placeholder={i18n.t('register.email-placeholder')}
             onChange={e => setEmail(e.nativeEvent.text)}
             placeholderTextColor={"#27a194"}
             inputContainerStyle={styles.inputContainerStyleRegister}
@@ -76,7 +129,7 @@ export default function RegisterForm() {
             }
         />         
         <Input
-            placeholder='Password'            
+            placeholder={i18n.t('register.password-placeholder')}
             onChange={e => setPassword(e.nativeEvent.text)}
             password={true}
             secureTextEntry={hidePassword}
@@ -103,12 +156,12 @@ export default function RegisterForm() {
             }            
         />    
         <Input
-            placeholder='Repeat Password'            
+            placeholder={i18n.t('register.repeat-password-placeholder')}
             onChange={e => setRepeatPassword(e.nativeEvent.text)}
             password={true}
             secureTextEntry={hideRepeatPassword}
             placeholderTextColor={"#27a194"}
-            inputContainerStyle={[styles.inputContainerStyleRegister, {marginBottom: 25}]}
+            inputContainerStyle={[styles.inputContainerStyleRegister, {marginBottom: 30}]}
             inputStyle={{color: "#27a194"}}
             leftIcon={
                 <Icon
@@ -130,18 +183,18 @@ export default function RegisterForm() {
             }            
         />          
         <BasicButton 
-        title="REGISTER" 
+        title={i18n.t('register.button-text')}
         animation="standard"
         buttonStyle={styles.btnRegister}
         textStyle={{padding:7}}
-        // onPress={Login}
+        onPress={Register}
         />
         <Text>{`        
             `}</Text>                   
-        <Text style={styles.haveAnAccountText}>You have an account?
+        <Text style={styles.haveAnAccountText}>{i18n.t('register.you-have-an-account?-text')}
             <Text> </Text>
             <Text style={styles.loginNowText} onPress={() => navigation.navigate("login")}>
-                Login</Text>
+            {i18n.t('register.login-now-text')}</Text>
         </Text>                       
         </View>
     )

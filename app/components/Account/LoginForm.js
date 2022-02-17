@@ -6,6 +6,11 @@ import * as firebase from 'firebase';
 import Toast from 'react-native-tiny-toast';
 import { useNavigation } from "@react-navigation/native";
 
+import * as Localization from 'expo-localization';
+import i18n from 'i18n-js';
+import { es } from '../../translations/es/global';
+import { en } from '../../translations/en/global';
+
 import { validateEmail } from "../../utils/validation";
 import WaterLoader from '../WaterLoader';
 
@@ -13,9 +18,15 @@ export default function LoginForm() {
     const navigation = useNavigation();
     const [isVisible, setIsVisible] = useState(false);    
 
-    const [email, setEmail] = useState("l@gmail.com");
-	const [password, setPassword] = useState("1234567");
+    const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
     const [hidePassword, setHidePassword] = useState(true);
+
+    const [language, setLanguage] = useState("es"); // useState que define en string el lenguaje
+    i18n.fallbacks = true; // Si no especificamos el origen de la traducción pone la traduccion del dispositivo predeterminada
+    i18n.translations = { en, es }; // lenguajes 
+    i18n.locale = language; // Poner manualmente el lenguaje
+    // i18n.locale = Localization.locale; // Detectar el lenguaje del dispositivo    
 
     const ToastMessage = (message) =>{
         Toast.show(message, {
@@ -34,7 +45,6 @@ export default function LoginForm() {
         });               
     }
   
-
 	const Login = async () => {
 		// signo ! significa Si email esta NUll o vacio ; == igual, !== diferente de
 		setIsVisible(true);
@@ -49,7 +59,7 @@ export default function LoginForm() {
 				await firebase.auth().signInWithEmailAndPassword(email, password)
 					.then(response=>{
                     setIsVisible(false);					
-                    navigation.navigate("account");	
+                    navigation.navigate("home");	
 					})
 					.catch(error => {
 						setIsVisible(false);
@@ -66,8 +76,8 @@ export default function LoginForm() {
     <View style={styles.formContainer}>
     <WaterLoader isVisible={isVisible} />
         <Input
-            value="l@gmail.com"
-            placeholder='Email'
+            // value="l@gmail.com"
+            placeholder={i18n.t('login.email-placeholder')}
             onChange={e => setEmail(e.nativeEvent.text)}
             placeholderTextColor={"#27a194"}
             inputContainerStyle={styles.inputContainerStyleLogin}
@@ -82,8 +92,8 @@ export default function LoginForm() {
             }
         /> 
         <Input
-            value="1234567"
-            placeholder='Password'            
+            // value="1234567"
+            placeholder={i18n.t('login.password-placeholder')}
             onChange={e => setPassword(e.nativeEvent.text)}
             password={true}
             secureTextEntry={hidePassword}
@@ -109,11 +119,11 @@ export default function LoginForm() {
                 />                
             }            
         />     
-        <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
+        <Text style={styles.forgotPasswordText}>{i18n.t('login.forgot-password-text')}</Text>
             <Text>{`    
                 `}</Text>   
             <BasicButton 
-            title="LOGIN" 
+            title={i18n.t('login.button-text')}
             animation="standard"
             buttonStyle={styles.btnLogin}
             textStyle={{padding:7}}
@@ -122,10 +132,10 @@ export default function LoginForm() {
         <Text>{`
         
             `}</Text>                   
-        <Text style={styles.dontHaveAnAccountText}>Don't have an account?
+        <Text style={styles.dontHaveAnAccountText}>{i18n.t('login.dont-have-an-account?-text')}
             <Text> </Text>
             <Text style={styles.registerNowText} onPress={() => navigation.navigate("register")}>
-                Register Now</Text>
+            {i18n.t('login.register-now-text')}</Text>
         </Text>
 
     </View>
