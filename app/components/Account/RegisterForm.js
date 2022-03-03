@@ -18,8 +18,8 @@ export default function RegisterForm() {
     const navigation = useNavigation();
     const [isVisible, setIsVisible] = useState(false);    
 
-    const [establishmentName, setEstablishmentName] = useState("test");
-    const [email, setEmail] = useState("t@gmail.com");
+    const [establishmentName, setEstablishmentName] = useState("b2");
+    const [email, setEmail] = useState("b@gmail.com");
 	const [password, setPassword] = useState("1234567");
     const [repeatPassword, setRepeatPassword] = useState("1234567");
 
@@ -61,20 +61,21 @@ export default function RegisterForm() {
 		} else {
 		  if(!validateEmail(email)){		  
             ToastMessage("Invalid Email");
-			} else {                
-				if(password !== repeatPassword){					                    
-					ToastMessage("Passwords don't match");
-				} else {
+            } else {                
+                if(password !== repeatPassword){					                    
+                    ToastMessage("Passwords don't match");
+                } else {
                     setIsVisible(true);
-					await firebase.auth().createUserWithEmailAndPassword(email, password)
-					.then(response=>{
-						firebase.firestore().collection(response.user.uid).doc("Main_Data").set({
-							Establishment_Name: establishmentName,
+                    await firebase.auth().createUserWithEmailAndPassword(email, password)
+                    .then((response)=>{
+                        firebase.firestore().collection(response.user.uid).doc("Main_Data").set({
+                            Establishment_Name: establishmentName,
                         })
-						firebase.firestore().collection(response.user.uid).doc("Configuration_Data").set({
-							Dark_Mode: false,
-							Loaded_Data: true
+                        firebase.firestore().collection(response.user.uid).doc("Configuration_Data").set({
+                            Dark_Mode: false,
+                            Loaded_Data: true
                         }).then(response =>{
+                            console.log("Se Guardaron Los Datos En La BD");	
                             // Data is setted in firestore
                             // console.log(response);     
                             // firebase.auth().signOut();
@@ -85,13 +86,15 @@ export default function RegisterForm() {
                         setIsVisible(false);
                         ToastMessage("Account created successfully");
                         navigation.navigate("account");
-					}).catch(error => {						
-						ToastMessage(error);
+                    }).catch((error) => {				
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        ToastMessage(errorMessage);
                         setIsVisible(false);
-					});
-                    // setIsVisible(false);
-				}
-			}
+                    });
+                    setIsVisible(false);
+                }
+            }
 		}	
 	};    
     return (
