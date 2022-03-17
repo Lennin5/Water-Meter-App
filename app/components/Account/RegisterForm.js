@@ -101,7 +101,6 @@ export default function RegisterForm() {
         <View style={styles.formContainer}>
             <WaterLoader isVisible={isVisible} />
             <Input
-            placeholder='Establishment'
             placeholder={i18n.t('register.establishment-name-placeholder')}
             onChange={e => setEstablishmentName(e.nativeEvent.text)}
             placeholderTextColor={"#27a194"}

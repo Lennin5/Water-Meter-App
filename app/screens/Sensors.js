@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text } from 'react-native'
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 
 import { firebaseApp } from "../utils/firebase";
 import firebase from "firebase/app";
@@ -18,39 +19,42 @@ export default function Sensors() {
     console.log(sensors);
     
     // Get auth state with user data and consumption data of sensors
-    useEffect(() => {
+    useEffect(() => {        
         firebase.auth().onAuthStateChanged((userInfo) =>{
             setUser(userInfo);
 
-            const resultSensors = []
+            var resultSensors = []
 
             db.collection(userInfo.uid)
             .doc("Consumption_Data")            
                 .collection("Sensors_Data")        
-                    .get()
-                        .then((snap) => {
+                    .onSnapshot((snap) => {
                         setTotalSensors(snap.size)
                     })     
                     
             db.collection(userInfo.uid)
             .doc("Consumption_Data")            
-                .collection("Sensors_Data")        
-                    .get()
-                        .then((response) => {
-                            setStartSensor(response.docs[response.docs.length - 1])
+                .collection("Sensors_Data")    
+                    .orderBy("Timestamp", "asc")
+                        .onSnapshot((response) => {
+                                setStartSensor(response.docs[response.docs.length - 1])
 
-                            response.forEach((doc) => {
-                                const sensor = doc.data()
-                                sensor.id = doc.id
-                                // console.log(doc.data());
-                                resultSensors.push(sensor)                        
-                            });
-                            setSensors(resultSensors)
-                    })                      
-        })           
-    }, [])    
+                                response.forEach((doc) => {
+                                    const sensor = doc.data()
+                                    sensor.id = doc.id
+                                    // console.log(doc.data());                                
+                                    resultSensors.push(sensor)                        
+                                });
+                                setSensors(resultSensors)
+                                resultSensors = []
+                        })   
+                        
+                        console.log(resultSensors);
+                    
+        })        
+    }, [])
     
-
+    
     return (
         <View>
             <Text>Sensors</Text>

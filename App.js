@@ -5,6 +5,7 @@ import firebaseApp from "./app/utils/firebase";
 import { encode, decode } from "base-64";
 
 LogBox.ignoreLogs(["It appears that you are using old version of react-navigation library", "Setting a timer"]);
+// default, portrait, landscape
 
 if (!global.btoa) global.btoa = encode;
 if (!global.atob) global.atob = decode;
